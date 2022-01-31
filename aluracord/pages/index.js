@@ -1,36 +1,7 @@
 import { Box, Button, Text, TextField, Image } from "@skynexui/components";
 import appConfig from "../config.json";
-
-function GlobalStyle() {
-  return (
-    <style global jsx>{`
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        list-style: none;
-      }
-      body {
-        font-family: "Open Sans", sans-serif;
-      }
-      /* App fit Height */
-      html,
-      body,
-      #__next {
-        min-height: 100vh;
-        display: flex;
-        flex: 1;
-      }
-      #__next {
-        flex: 1;
-      }
-      #__next > * {
-        flex: 1;
-      }
-      /* ./App fit Height */
-    `}</style>
-  );
-}
+import {useRouter} from "next/router"
+import React from "react"
 
 function Titulo(props) {
   const Tag = props.tag || "h1";
@@ -49,10 +20,11 @@ function Titulo(props) {
 }
 
 function HomePage() {
-  const username = "peas";
+  const [username, setUsername] = React.useState("")
+  const roteamento = useRouter()
+
   return (
     <>
-      <GlobalStyle />
       <Box
         styleSheet={{
           display: "flex",
@@ -87,6 +59,11 @@ function HomePage() {
           {/* Formulário */}
           <Box
             as="form"
+            onSubmit={ function (evento){
+              evento.preventDefault()
+              roteamento.push("/chat")
+              console.log("ó")
+            }}
             styleSheet={{
               display: "flex",
               flexDirection: "column",
@@ -109,6 +86,7 @@ function HomePage() {
             </Text>
 
             <TextField
+              value={username}
               fullWidth
               textFieldColors={{
                 neutral: {
@@ -117,6 +95,13 @@ function HomePage() {
                   mainColorHighlight: appConfig.theme.colors.primary[500],
                   backgroundColor: appConfig.theme.colors.neutrals[800],
                 },
+              }}
+              onChange={function (evento) {
+                console.log(evento.target.value)
+                const valor = evento.target.value
+                // onde está o valor do campo de text
+
+                setUsername(valor) //trocando o valor do campo através do useState
               }}
             />
             <Button
