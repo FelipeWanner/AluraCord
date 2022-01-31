@@ -60,9 +60,13 @@ function HomePage() {
           <Box
             as="form"
             onSubmit={ function (evento){
-              evento.preventDefault()
-              roteamento.push("/chat")
-              console.log("ó")
+              //barrar o refresh
+              evento.preventDefault();
+              console.log('Alguém submeteu o form');
+              //maneira padrão de trocar de página
+              //window.location.href = '/chat' 
+              //usando o next/react
+              roteamento.push('/chat')
             }}
             styleSheet={{
               display: "flex",
@@ -139,7 +143,9 @@ function HomePage() {
                 borderRadius: "50%",
                 marginBottom: "16px",
               }}
-              src={`https://github.com/${username}.png`}
+              src={
+                username.length > 2 && `https://github.com/${username}.png` || `https://st2.depositphotos.com/9998432/48284/v/450/depositphotos_482842120-stock-illustration-default-avatar-photo-placeholder-grey.jpg`
+              }
             />
             <Text
               variant="body4"
