@@ -66,7 +66,7 @@ function HomePage() {
               //maneira padrão de trocar de página
               //window.location.href = '/chat' 
               //usando o next/react
-              roteamento.push('/chat')
+              roteamento.push(`/chat?username=${username}`)
             }}
             styleSheet={{
               display: "flex",
