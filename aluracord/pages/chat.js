@@ -57,8 +57,8 @@ export default function ChatPage() {
     //portanto, antes de renderiza-la, vamos criar um objeto com todas essas informações
     const mensagem = {
       id: listaDeMensagens.length + 1,
-      textoDaMensagem: novaMensagem,
-      emissor: usuarioLogado,
+      texto: novaMensagem,
+      de: usuarioLogado,
     }
 
     supabaseClient
@@ -248,9 +248,9 @@ function MessageList(props) {
                   display: "inline-block",
                   marginRight: "8px",
                 }}
-                src={`https://github.com/${mensagem.emissor}.png`}
+                src={`https://github.com/${mensagem.de}.png`}
               />
-              <Text tag="strong">{mensagem.emissor}</Text>
+              <Text tag="strong">{mensagem.de}</Text>
               <Text
                 styleSheet={{
                   fontSize: "10px",
@@ -262,14 +262,14 @@ function MessageList(props) {
                 {new Date().toLocaleDateString()}
               </Text>
             </Box>
-            {/* condicional booleane */}
-            {mensagem.textoDaMensagem.startsWith(":sticker:") ? ( 
+            condicional booleane
+            {mensagem.texto.startsWith(":sticker:") ? ( 
               // se for sticker executa o codigo abaixo
-              <Image src={mensagem.textoDaMensagem.replace(":sticker:", "")}/>
+              <Image src={mensagem.texto.replace(":sticker:", "")}/>
             )
             :
             //se nao for sticker, executa a mensagem normal
-            (mensagem.textoDaMensagem)} 
+            (mensagem.texto)} 
             
           </Text>
         )
