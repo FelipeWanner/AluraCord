@@ -1,22 +1,22 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
-import {createClient} from "@supabase/supabase-js"
-import {useRouter} from "next/router"
-import { ButtonSendSticker } from "../src/components/ButtonSendSticker"
+import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/router";
+import { ButtonSendSticker } from "../src/components/ButtonSendSticker";
 
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0NDEwMzQ1OSwiZXhwIjoxOTU5Njc5NDU5fQ.vZDq3J48JqoZANvesLSUayPxaSOV-SbvgsiiIdejAzk";
+const SUPABASE_URL = "https://ughbyeacdgeebarkjyim.supabase.co";
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0NDEwMzQ1OSwiZXhwIjoxOTU5Njc5NDU5fQ.vZDq3J48JqoZANvesLSUayPxaSOV-SbvgsiiIdejAzk"
-const SUPABASE_URL = "https://ughbyeacdgeebarkjyim.supabase.co"
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-
-function escutaMensagensEmTempoReal(adicionaMensagem){
+function escutaMensagensEmTempoReal(adicionaMensagem) {
   return supabaseClient
     .from("mensagens")
-    .on("INSERT", (respostaLive)=>{
-      adicionaMensagem(respostaLive.new)
+    .on("INSERT", (respostaLive) => {
+      adicionaMensagem(respostaLive.new);
     })
-    .subscribe()
+    .subscribe();
 }
 
 export default function ChatPage() {
@@ -29,28 +29,27 @@ export default function ChatPage() {
   // [x] Criar campo textarea
   // [x] usar o onChange e useState (ter if para caso seja enter, limpar a variavel)
   // [x] lista de mensagem
-  const roteamento = useRouter()
-  const usuarioLogado = roteamento.query.username
-  const [mensagem, setMensagem] = React.useState("")
-  const [listaDeMensagens, setListaDeMensagens] = React.useState([])
+  const roteamento = useRouter();
+  const usuarioLogado = roteamento.query.username;
+  const [mensagem, setMensagem] = React.useState("");
+  const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
-  React.useEffect(()=>{
-    supabaseClient.from("mensagens").select("*")
-    .order("id", {ascending: false}) //função da lib supabase para definir a ordem com que carregamos o array
-    // aqui nós precisamos inverter a ordem do array, para que a ultima mensagem escrita apareça primeiro
-    .then(({data})=>{
-      console.log("dados da consulta: ", data)
-      setListaDeMensagens(data)
-    })  
-    escutaMensagensEmTempoReal((novaMensagem)=>{
-      setListaDeMensagens((valorAtualDaLista)=>{
-        return [
-          novaMensagem,
-          ...valorAtualDaLista
-        ]
-      })
-    })
-  }, [])
+  React.useEffect(() => {
+    supabaseClient
+      .from("mensagens")
+      .select("*")
+      .order("id", { ascending: false }) //função da lib supabase para definir a ordem com que carregamos o array
+      // aqui nós precisamos inverter a ordem do array, para que a ultima mensagem escrita apareça primeiro
+      .then(({ data }) => {
+        console.log("dados da consulta: ", data);
+        setListaDeMensagens(data);
+      });
+    escutaMensagensEmTempoReal((novaMensagem) => {
+      setListaDeMensagens((valorAtualDaLista) => {
+        return [novaMensagem, ...valorAtualDaLista];
+      });
+    });
+  }, []);
 
   function handleNovaMensagem(novaMensagem) {
     //a mensagem não pode ser apenas texto, precisa de data, quem enviou etc,
@@ -59,12 +58,12 @@ export default function ChatPage() {
       id: listaDeMensagens.length + 1,
       texto: novaMensagem,
       de: usuarioLogado,
-    }
+    };
 
     supabaseClient
       .from("mensagens")
       .insert([mensagem]) //tem que ser um objeto com os MESMOS campos do supabase
-      .then(({data})=>{
+      .then(({ data }) => {
         // console.log("criando mensagens: ", data)
         // setListaDeMensagens([
         //   data[0],
@@ -72,8 +71,8 @@ export default function ChatPage() {
         // ])
         //aqui nós trocamos a variavel mensagem pela resposta na posição zero (ver console.log de "data")
         // que é a mesma coisa, porém no servidor do supabase
-      })
-    //essa linha manda para o servidor do supabase as mensagens novas do usuario. 
+      });
+    //essa linha manda para o servidor do supabase as mensagens novas do usuario.
 
     //setListaDeMensagens([mensagem, ...listaDeMensagens]);
     //essa linha foi descontinuada por usarmos o banco de dados, então ela terá algumas
@@ -160,8 +159,8 @@ export default function ChatPage() {
               }}
             />
             <ButtonSendSticker
-              onStickerClick={(sticker)=>{
-                handleNovaMensagem(":sticker: " + sticker)
+              onStickerClick={(sticker) => {
+                handleNovaMensagem(":sticker: " + sticker);
               }}
             />
             {/* <Button
@@ -180,7 +179,7 @@ export default function ChatPage() {
         </Box>
       </Box>
     </Box>
-  )
+  );
 }
 
 function Header() {
@@ -204,7 +203,7 @@ function Header() {
         />
       </Box>
     </>
-  )
+  );
 }
 
 function MessageList(props) {
@@ -262,18 +261,16 @@ function MessageList(props) {
                 {new Date().toLocaleDateString()}
               </Text>
             </Box>
-            condicional booleane
-            {mensagem.texto.startsWith(":sticker:") ? ( 
+            {mensagem.texto.startsWith(":sticker:") ? (
               // se for sticker executa o codigo abaixo
-              <Image src={mensagem.texto.replace(":sticker:", "")}/>
-            )
-            :
-            //se nao for sticker, executa a mensagem normal
-            (mensagem.texto)} 
-            
+              <Image src={mensagem.texto.replace(":sticker:", "")} />
+            ) : (
+              //se nao for sticker, executa a mensagem normal
+              mensagem.texto
+            )}
           </Text>
-        )
+        );
       })}
     </Box>
-  )
+  );
 }
